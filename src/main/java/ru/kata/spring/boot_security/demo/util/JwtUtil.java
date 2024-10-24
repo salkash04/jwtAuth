@@ -13,16 +13,16 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    public String generateToken(String username) {
+    public String generateToken(String password) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(password)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public String extractPassword(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
@@ -39,8 +39,9 @@ public class JwtUtil {
         return expiration.before(new Date());
     }
 
-    public boolean validateToken(String token, String username) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+    public boolean validateToken(String token, String password) {
+        final String extractedPassword = extractPassword(token);
+
+        return (extractedPassword.equals(password) && !isTokenExpired(token));
     }
 }

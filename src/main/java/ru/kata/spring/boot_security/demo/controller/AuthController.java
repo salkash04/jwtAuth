@@ -16,7 +16,7 @@ public class AuthController {
 
     @GetMapping("/header")
     public ResponseEntity<String> authHeader(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        return ResponseEntity.ok("Authorization Header: " + authHeader);
+        return ResponseEntity.ok("success: " + authHeader);
     }
 
     @GetMapping("/param")
@@ -25,17 +25,17 @@ public class AuthController {
     }
 
     @GetMapping("/generateToken")
-    public ResponseEntity<String> generateToken(@RequestParam("username") String username) {
-        String token = jwtUtil.generateToken(username);
+    public ResponseEntity<String> generateToken(@RequestParam("password") String password) {
+        String token = jwtUtil.generateToken(password);
         return ResponseEntity.ok(token);
     }
 
     @GetMapping("/jwt")
-    public ResponseEntity<String> authJwt(@RequestHeader("Authorization") String jwt) {
-        String username = jwtUtil.extractUsername(jwt);
+    public ResponseEntity<String> authJwt(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
+        String password = jwtUtil.extractPassword(jwt);
 
-        if (jwtUtil.validateToken(jwt, username)) {
-            return ResponseEntity.ok("JWT Valid: " + jwt + " for user: " + username);
+        if (jwtUtil.validateToken(jwt, password)) {
+            return ResponseEntity.ok("JWT Valid: " + jwt + " for user: " + password);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT token");
         }
